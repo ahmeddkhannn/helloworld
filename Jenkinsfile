@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building...'
-                    sh 'python hello.py'
+                    bat 'python hello.py'
                 }
             }
         }
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     echo 'Dockerizing...'
-                    sh 'docker build -t hello-world .'
+                    bat 'docker build -t hello-world .'
                 }
             }
         }
