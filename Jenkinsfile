@@ -4,7 +4,7 @@ pipeline {
     environment {
         GIT_CREDENTIALS_ID = 'github-credentials'
         SONARQUBE_SERVER = 'SonarQube'
-        SONARQUBE_TOKEN = credentials('sonarqube-token')
+        SONARQUBE_TOKEN = credentials('sonarqube-token') // Ensures SONARQUBE_TOKEN is retrieved correctly
     }
 
     stages {
