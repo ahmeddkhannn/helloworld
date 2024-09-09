@@ -5,29 +5,21 @@ pipeline {
         GIT_CREDENTIALS_ID = 'github-credentials'
         SONARQUBE_SERVER = 'SonarQube'
         SONARQUBE_TOKEN = credentials('sonarqube-token') // Ensures SONARQUBE_TOKEN is retrieved correctly
+        DOCKER_IMAGE_NAME = 'python-sample-app'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/ahmeddkhannn/helloworld.git', credentialsId: env.GIT_CREDENTIALS_ID
+                git branch: 'main', url: 'https://github.com/uber/Python-Sample-Application.git', credentialsId: env.GIT_CREDENTIALS_ID
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    echo 'Building...'
-                    bat 'python hello.py'
-                }
-            }
-        }
-
-        stage('Dockerize') {
-            steps {
-                script {
-                    echo 'Dockerizing...'
-                    bat 'docker build -t hello-world .'
+                    echo 'Installing dependencies...'
+                    sh 'pip install -r requirements.txt'
                 }
             }
         }
@@ -37,8 +29,26 @@ pipeline {
                 script {
                     echo 'Running SonarQube analysis...'
                     withSonarQubeEnv(env.SONARQUBE_SERVER) {
-                        bat 'sonar-scanner -Dsonar.projectKey=my-project-key -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}'
+                        sh 'sonar-scanner -Dsonar.projectKey=python-sample-app -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}'
                     }
+                }
+            }
+        }
+
+        stage('Dockerize') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    sh 'docker build -t ${DOCKER_IMAGE_NAME} .'
+                }
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                script {
+                    echo 'Running application...'
+                    sh 'python app.py'
                 }
             }
         }
