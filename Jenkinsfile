@@ -18,6 +18,7 @@ pipeline {
             steps {
                 script {
                     echo 'Installing dependencies...'
+                    bat 'python -m pip install --upgrade pip'
                     bat 'pip install -r requirements.txt'
                 }
             }
