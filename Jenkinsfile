@@ -5,7 +5,6 @@ pipeline {
         GIT_CREDENTIALS_ID = 'github-credentials'
         SONARQUBE_SERVER = 'SonarQube'
         SONARQUBE_TOKEN = credentials('sonarqube-token') // Ensures SONARQUBE_TOKEN is retrieved correctly
-        DOCKER_IMAGE_NAME = 'python-sample-app'
     }
 
     stages {
@@ -19,7 +18,25 @@ pipeline {
             steps {
                 script {
                     echo 'Installing dependencies...'
-                    sh 'pip install -r requirements.txt'
+                    bat 'pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    echo 'Building...'
+                    bat 'python app.py'
+                }
+            }
+        }
+
+        stage('Dockerize') {
+            steps {
+                script {
+                    echo 'Dockerizing...'
+                    bat 'docker build -t python-sample-app .'
                 }
             }
         }
@@ -29,26 +46,8 @@ pipeline {
                 script {
                     echo 'Running SonarQube analysis...'
                     withSonarQubeEnv(env.SONARQUBE_SERVER) {
-                        sh 'sonar-scanner -Dsonar.projectKey=python-sample-app -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}'
+                        bat 'sonar-scanner -Dsonar.projectKey=my-project-key -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONARQUBE_TOKEN}'
                     }
-                }
-            }
-        }
-
-        stage('Dockerize') {
-            steps {
-                script {
-                    echo 'Building Docker image...'
-                    sh 'docker build -t ${DOCKER_IMAGE_NAME} .'
-                }
-            }
-        }
-
-        stage('Run Application') {
-            steps {
-                script {
-                    echo 'Running application...'
-                    sh 'python app.py'
                 }
             }
         }
