@@ -10,17 +10,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/uber/Python-Sample-Application.git', credentialsId: env.GIT_CREDENTIALS_ID
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    echo 'Installing dependencies...'
-                    bat 'python -m pip install --upgrade pip'
-                    bat 'pip install -r requirements.txt'
-                }
+                git branch: 'main', url: 'https://github.com/ahmeddkhannn/helloworld.git', credentialsId: env.GIT_CREDENTIALS_ID
             }
         }
 
@@ -28,7 +18,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building...'
-                    bat 'python app.py'
+                    bat 'python hello.py'
                 }
             }
         }
@@ -37,7 +27,7 @@ pipeline {
             steps {
                 script {
                     echo 'Dockerizing...'
-                    bat 'docker build -t python-sample-app .'
+                    bat 'docker build -t hello-world .'
                 }
             }
         }
