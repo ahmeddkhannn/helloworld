@@ -5,8 +5,8 @@ pipeline {
         GIT_CREDENTIALS_ID = 'github-credentials'
         SONARQUBE_SERVER = 'SonarQube'
         SONARQUBE_TOKEN = credentials('sonarqube-token')
-        SSH_CREDENTIALS_ID = 'azure-ssh-credentials'
-        AZURE_VM_IP = '172.176.219.92'
+        //SSH_CREDENTIALS_ID = 'azure-ssh-credentials'
+        //AZURE_VM_IP = '172.176.219.92'
     }
 
     stages {
@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Azure VM') {
+        /* stage('Deploy to Azure VM') {
             steps {
                 script {
                     echo 'Deploying to Azure VM...'
@@ -64,7 +64,7 @@ pipeline {
                 }
             }
         }
-    }
+    } */
 
     post {
         always {
